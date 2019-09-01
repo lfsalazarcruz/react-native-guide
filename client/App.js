@@ -1,51 +1,27 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Button,
-  FlatList
-} from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
+
+import GoalInput from "./components/GoalInput";
+import GoalItem from "./components/GoalItem";
 
 export default function App() {
-  const [inputText, setInputText] = useState("");
   const [goals, setGoals] = useState([]);
 
-  const inputHandler = inputText => {
-    setInputText(inputText);
-  };
-
-  const addGoalHandler = () => {
+  const addGoalHandler = goalTitle => {
     setGoals(currentGoals => [
       ...currentGoals,
       // Now the goals array will be an array of objects
-      { id: Math.random().toString(), text: inputText }
+      { id: Math.random().toString(), text: goalTitle }
     ]);
   };
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Type your goal..."
-          style={styles.input}
-          onChangeText={inputHandler}
-        />
-        <Button
-          title="add"
-          onPress={() => addGoalHandler(inputText)}
-          styles={styles.button}
-        />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler} />
       <FlatList
         keyExtractor={(item, index) => item.id}
         data={goals}
-        renderItem={itemData => (
-          <View style={styles.goal}>
-            <Text>{itemData.item.text}</Text>
-          </View>
-        )}
+        renderItem={itemData => <GoalItem goal={itemData.item.text} />}
       />
     </View>
   );
@@ -55,26 +31,5 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 50,
     marginHorizontal: 20
-  },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between"
-  },
-  input: {
-    flex: 1,
-    borderColor: "dimgray",
-    borderWidth: 1,
-    padding: 10
-  },
-  button: {
-    flex: 1,
-    marginLeft: 50
-  },
-  goal: {
-    borderWidth: 1,
-    marginTop: 10,
-    backgroundColor: "#ccc",
-    padding: 10
   }
 });
